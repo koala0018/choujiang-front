@@ -25,8 +25,32 @@ function clearCookie(cookiename) {
 }
 
 //随机数
-function rnd(n, m){
-	return Math.floor(Math.random()*(m-n+1)+n);
+function rnd(n, m) {
+	let needNum;
+	const number = Math.floor(Math.random() * (m - n + 1) + n);
+	var ran = Math.ceil(Math.random() * 100);
+	// alert("随机概率：" + ran)
+	needNum = 0;
+	if (ran < 10) {
+		// alert("进入小于10概率")
+		let ar = [1,3];
+			needNum = ar[Math.floor(Math.random()*2)]
+	} else if (ran>10&&ran<50) {
+		// alert("进入小于50概率")
+		let ar = [0,2];
+			needNum = ar[Math.floor(Math.random()*2)]
+	} else if (ran>50 && ran<80) {
+		// alert("进入小于70概率")
+		let ar = [5,7];
+			needNum = ar[Math.floor(Math.random()*2)]
+	} else if (ran>80 && ran<100) {
+		// alert("进入小于100概率")
+		let ar = [4,6];
+			needNum = ar[Math.floor(Math.random()*2)]
+	}
+		// alert("最终为"+needNum)
+	return needNum;
+
 }
 
 //显示提示框
@@ -119,15 +143,17 @@ var rotateFn = function (item, angles, txt){
 		animateTo: angles+1800,
 		duration: 8000,
 		callback: function (){
-			setCookie('LOTTERY_TOTAL_NUM', total_num, 24); //记录剩余次数
+			setCookie('LOTTERY_TOTAL_NUM', 1, 24); //记录剩余次数
 			$modal.hide();
 			drawLottery(item); //中奖后改变背景颜色
-			if(item == 3 || item == 7){
-				$popover.show().find('.m4').show();
-			}else{
-				$popover.show().find('.m5').show().find('font').text(txt);
-				record_log(txt); //插入我的中奖纪录
-			}
+			$popover.show().find('.m5').show().find('font').text(txt);
+			record_log(txt); //插入我的中奖纪录
+			// if(item == 3 || item == 7){
+			// 	$popover.show().find('.m4').show();
+			// }else{
+			// 	$popover.show().find('.m5').show().find('font').text(txt);
+			// 	record_log(txt); //插入我的中奖纪录
+			// }
 			changeNum(total_num);
 			_lottery.isLock = !_lottery.isLock;
 		}
@@ -136,7 +162,7 @@ var rotateFn = function (item, angles, txt){
 
 //开始抽奖
 function lottery(){
-	if(_lottery.isLock) { showToast('心急吃不了热豆腐哦'); return; }
+	if(_lottery.isLock) { showToast('此次抽奖未结束，想抽奖请刷新'); return; }
 	$modal.hide();
 	if(total_num <= 0){
 		$popover.show().find('.m3').show();
@@ -163,10 +189,9 @@ function record_log(txt){
 	$el.append(tpl);
 }
 
-//显示微信分享提示
+// 显示微信分享提示
 function share_tips(){
-	$modal.hide();
-	$popover.show().find('.m6').show();
+	close_popover();
 }
 
 //关闭弹出层
@@ -183,8 +208,8 @@ $(function(){
     changeNum(total_num);
     
 	//动态添加大转盘的奖品与奖品区域背景颜色
-	_lottery.title = ["奖品一", "奖品二", "奖品三", "谢谢参与", "奖品四", "奖品五", "奖品六 ", "谢谢参与"];
-	_lottery.colors = ["#fe807d", "#fe7771", "#fe807d", "#fe7771","#fe807d", "#fe7771", "#fe807d", "#fe7771"];
+	_lottery.title = ["涩涩衣服券", "C-200元红包", "按摩券", "C-零食券", "涩涩道具券", "C-奶茶券", "激情抛光", "C-草莓券"];
+	_lottery.colors = ["#fe807d", "#fe7771", "#fe807d", "#fe7771","#fe807d", "#fe7771", "	#fe807d", "#fe7771"];
 
 	//go 点击事件
 	$go.click(function (){
@@ -193,18 +218,7 @@ $(function(){
 	
 	//领取/分享/再抽一次
 	$('.modal_btns').on('click',function(){
-		var thisId = $(this).attr('id');
-		switch(thisId){
-			case 'share_btn':
-				share_tips();
-			break;
-			case 'receives_btn':
-				window.location.href = 'http://www.hehaibao.com';
-			break;
-			case 'come_again_btn':
-				lottery();
-			break;
-		}
+		close_popover();
 	});
 	
 	//我的中奖记录和活动规则
