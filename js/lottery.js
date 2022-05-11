@@ -143,11 +143,8 @@ var rotateFn = function (item, angles, txt){
 		animateTo: angles+1800,
 		duration: 8000,
 		callback: function (){
-<<<<<<< HEAD
 			setCookie('LOTTERY_TOTAL_NUM', 1, 24*7); //记录剩余次数
-=======
 			setCookie('LOTTERY_TOTAL_NUM', 1, 24); //记录剩余次数
->>>>>>> 8f4687ed9eebbee8cd1596d98cf173ee310527ec
 			$modal.hide();
 			drawLottery(item); //中奖后改变背景颜色
 			$popover.show().find('.m5').show().find('font').text(txt);
