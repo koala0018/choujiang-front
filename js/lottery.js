@@ -24,34 +24,7 @@ function clearCookie(cookiename) {
     setCookie(cookiename, "", -1);  
 }
 
-//随机数
-function rnd(n, m) {
-	let needNum;
-	const number = Math.floor(Math.random() * (m - n + 1) + n);
-	var ran = Math.ceil(Math.random() * 100);
-	// alert("随机概率：" + ran)
-	needNum = 0;
-	if (ran < 10) {
-		// alert("进入小于10概率")
-		let ar = [1,3];
-			needNum = ar[Math.floor(Math.random()*2)]
-	} else if (ran>10&&ran<50) {
-		// alert("进入小于50概率")
-		let ar = [0,2];
-			needNum = ar[Math.floor(Math.random()*2)]
-	} else if (ran>50 && ran<80) {
-		// alert("进入小于70概率")
-		let ar = [5,7];
-			needNum = ar[Math.floor(Math.random()*2)]
-	} else if (ran>80 && ran<100) {
-		// alert("进入小于100概率")
-		let ar = [4,6];
-			needNum = ar[Math.floor(Math.random()*2)]
-	}
-		// alert("最终为"+needNum)
-	return needNum;
 
-}
 
 //显示提示框
 var toast_timer = 0;
@@ -160,7 +133,6 @@ var rotateFn = function (item, angles, txt){
 		}
 	});
 };
-
 //开始抽奖
 function lottery(){
 	if(_lottery.isLock) { showToast('此次抽奖未结束，想抽奖请刷新'); return; }
@@ -200,6 +172,34 @@ function close_popover(){
 	$popover.hide();
 }
 
+//随机数
+function rnd(n, m) {
+	let needNum;
+	const number = Math.floor(Math.random() * (m - n + 1) + n);
+	var ran = Math.ceil(Math.random() * 100);
+	// alert("随机概率：" + ran)
+	needNum = 0;
+	if (ran < 10) {
+		// alert("进入小于10概率")
+		let ar = [1,3];
+		needNum = ar[Math.floor(Math.random()*2)]
+	} else if (ran>10&&ran<50) {
+		// alert("进入小于50概率")
+		let ar = [0,2];
+		needNum = ar[Math.floor(Math.random()*2)]
+	} else if (ran>50 && ran<80) {
+		// alert("进入小于70概率")
+		let ar = [5,7];
+		needNum = ar[Math.floor(Math.random()*2)]
+	} else if (ran>80 && ran<100) {
+		// alert("进入小于100概率")
+		let ar = [4,6];
+		needNum = ar[Math.floor(Math.random()*2)]
+	}
+	// alert("最终为"+needNum)
+	return needNum;
+
+}
 $(function(){
 	
     //初始化我的抽奖记录
@@ -209,7 +209,7 @@ $(function(){
     changeNum(total_num);
     
 	//动态添加大转盘的奖品与奖品区域背景颜色
-	_lottery.title = ["涩涩衣服券", "C-200元红包", "按摩券", "C-零食券", "涩涩道具券", "C-奶茶券", "激情抛光", "C-草莓券"];
+	_lottery.title = ["50元红包", "200元红包", "指定护肤品", "大餐券", "哒咩涩涩券", "零食水果券", "指定护化妆品", "100元红包"];
 	_lottery.colors = ["#fe807d", "#fe7771", "#fe807d", "#fe7771","#fe807d", "#fe7771", "	#fe807d", "#fe7771"];
 
 	//go 点击事件
