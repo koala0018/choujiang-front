@@ -1,19 +1,18 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
 </script>
 
 <template>
-<!--  <header>-->
-<!--    <div class="wrapper">、-->
-<!--      <nav>-->
+  <header>
+    <div class="wrapper">
+      <nav>
 <!--        <RouterLink to="/whereToGo">咱去哪玩~~</RouterLink>-->
-<!--      </nav>-->
-<!--    </div>-->
-<!--  </header>-->
-<!--  <body>-->
+      </nav>
+    </div>
+  </header>
+  <body>
   <router-view></router-view>
-<!--  </body>-->
+  </body>
 
 </template>
 
