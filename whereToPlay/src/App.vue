@@ -4,20 +4,17 @@ import HelloWorld from './components/HelloWorld.vue'
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+<!--  <header>-->
+<!--    <div class="wrapper">、-->
+<!--      <nav>-->
+<!--        <RouterLink to="/whereToGo">咱去哪玩~~</RouterLink>-->
+<!--      </nav>-->
+<!--    </div>-->
+<!--  </header>-->
+<!--  <body>-->
+  <router-view></router-view>
+<!--  </body>-->
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-  <RouterView />
 </template>
 
 <style scoped>

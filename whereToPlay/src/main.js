@@ -1,14 +1,24 @@
 import './assets/main.css'
 
 import { createApp } from 'vue'
-import { createPinia } from 'pinia'
 
 import App from './App.vue'
 import router from './router'
+import {init as naiveInit} from './plugins/naive'
+import {init as piniaInit} from './plugins/naive'
 
-const app = createApp(App)
 
-app.use(createPinia())
-app.use(router)
+const setupApp = async () =>{
+    const app = createApp(App);
+    naiveInit(app);
+    piniaInit(app);
+    app.use(router);
+    app.mount('#app')
+}
 
-app.mount('#app')
+setupApp();
+
+
+
+
+
