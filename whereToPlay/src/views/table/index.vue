@@ -106,9 +106,19 @@ const submit = ()=> {
 const refresh = ()=>{
   data.splice(0);
   let myData = JSON.parse(localStorage.getItem('myData'));
+  if (myData === null) {
+    myData = [
+      {
+        id: null,
+        address: "写一个你想去的地方吧",
+        tags: ["已探索"]
+      }
+  ]
+  }
   myData.forEach(item=>{
     data.push(item)
   })
+
 }
 onMounted(()=>{
   refresh();
