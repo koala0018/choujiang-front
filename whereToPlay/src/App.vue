@@ -3,6 +3,7 @@ import { RouterLink, RouterView } from 'vue-router'
 </script>
 
 <template>
+  <title>ss</title>
   <header>
     <div class="wrapper">
       <nav>
@@ -11,7 +12,9 @@ import { RouterLink, RouterView } from 'vue-router'
     </div>
   </header>
   <body>
-  <router-view></router-view>
+  <n-message-provider>
+    <router-view></router-view>
+  </n-message-provider>
   </body>
 
 </template>

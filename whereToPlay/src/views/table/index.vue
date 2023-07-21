@@ -1,25 +1,23 @@
-<script>
-import { h, defineComponent } from "vue";
-import { NTag, NButton } from "naive-ui";
+<script setup>
+import {h, onMounted, reactive} from "vue";
+import { NTag, NButton,NSpace,useMessage } from "naive-ui";
 
-
-const createColumns = () => {
+const message = useMessage()
+const columns = () => {
   return [
     {
-      title: "Name",
-      key: "name"
+      key: "id",
+      width: 20
     },
     {
-      title: "Age",
-      key: "age"
+      title: "地点",
+      key: "address",
+      width: 150
     },
     {
-      title: "Address",
-      key: "address"
-    },
-    {
-      title: "Tags",
+      title: "标签",
       key: "tags",
+      width: 40,
       render(row) {
         const tags = row.tags.map((tagKey) => {
           return h(
@@ -28,7 +26,7 @@ const createColumns = () => {
                 style: {
                   marginRight: "6px"
                 },
-                type: "info",
+                type: "success",
                 bordered: false
               },
               {
@@ -40,83 +38,167 @@ const createColumns = () => {
       }
     },
     {
-      title: "Action",
+      title: "操作",
       key: "actions",
+      width: 50,
       render(row) {
-        return h(
-            NButton,
-            {
-              size: "small",
-            },
-            { default: () => "Send Email" }
+        return h(NSpace,{class: 'button-div'},{
+              default: ()=>[
+                h(
+                    NButton,
+                    {type: "error", secondary: true, strong: true, size: "small", onClick: ()=>{clickDelete(row)}},
+                    { default: () => "删除" }
+                ),
+                h(
+                      NButton,
+                    {type: "info", secondary: true, strong: true, size: "small", onClick: clickUpdate},
+                    { default: () => "编辑" }
+                )
+              ]
+            }
         );
       }
     }
   ];
 };
+const data = reactive([])
 
-const createData = () => [
-  {
-    key: 0,
-    name: "John Brown",
-    age: 32,
-    address: "New York No. 1 Lake Park",
-    tags: ["nice", "developer"]
-  },
-  {
-    key: 1,
-    name: "Jim Green",
-    age: 42,
-    address: "London No. 1 Lake Park",
-    tags: ["wow"]
-  },
-  {
-    key: 2,
-    name: "Joe Black",
-    age: 32,
-    address: "Sidney No. 1 Lake Park",
-    tags: ["cool", "teacher"]
-  }
-];
+const newPlaceData = reactive({
+  id: null,
+  address: "",
+  tags: []
+})
+const pagination = reactive({
+  pageSize: 10
+})
+const pageData = reactive({
+  dialogVisible: false,
+  cardVisible: false,
+})
+const clickNew = ()=>{
+  pageData.cardVisible = true;
+}
+const clickUpdate = ()=>{
+  // pageData.cardVisible = true;
+}
 
-export default defineComponent({
-  setup() {
-    return {
-      data: createData(),
-      columns: createColumns(),
-      pagination: {
-        pageSize: 10
-      }
-    };
+const clickDelete = (row)=>{
+  // pageData.dialogVisible = true;
+  const newArr = data.filter(item => item.address!==row.address);
+  localStorage.setItem('myData', JSON.stringify(newArr));
+  refresh()
+}
+
+const submit = ()=> {
+  if (newPlaceData.address) {
+    if (newPlaceData.tags.length === 0) {
+      newPlaceData.tags.push("未探索")
+    }
+    let temp = JSON.parse(localStorage.getItem('myData'));
+    temp.push(newPlaceData)
+    localStorage.setItem('myData', JSON.stringify(temp));
+    refresh();
+    console.log()
+    pageData.cardVisible = false;
   }
-});
+}
+
+const refresh = ()=>{
+  data.splice(0);
+  let myData = JSON.parse(localStorage.getItem('myData'));
+  myData.forEach(item=>{
+    data.push(item)
+  })
+}
+onMounted(()=>{
+  refresh();
+})
 </script>
 
 <template>
-  <div class="header_content">
-    <div class="title_content">
-      <div class="logo">
-        <!--          <img src="@/assets/img/logo.png" alt="" style="width: 40px; height: 40px" />-->
-        <!--          <img src="@/assets/img/HTTitle.png" style="margin-left: 8px" alt="" />-->
-      </div>
-      <div class="message">
-        咱去哪玩撒?
-      </div>
-    </div>
-  </div>
-
-  <n-space vertical :size="12" class="space">
+<!--  <div class="header_content">-->
+<!--    <div class="title_content">-->
+<!--      <div class="logo">-->
+<!--                  <img src="@/assets/img/logo.png" alt="" style="width: 40px; height: 40px" />-->
+<!--                  <img src="@/assets/img/HTTitle.png" style="margin-left: 8px" alt="" />-->
+<!--      </div>-->
+<!--      <div class="logo">-->
+<!--        咱去哪玩撒?-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+  <svg viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M199.083 259.18c58.244 0 105.46-47.216 105.46-105.46 0-58.245-47.216-105.46-105.46-105.46-58.244 0-105.46 47.215-105.46 105.46 0 58.244 47.216 105.46 105.46 105.46Z" fill="#0E79E8" stroke="#000" stroke-width="2.362"/><path d="M199.711 272.072c65.369 0 118.363-52.994 118.363-118.363 0-65.37-52.994-118.361-118.363-118.361S81.35 88.34 81.35 153.709s52.992 118.363 118.361 118.363Z" stroke="#28FDFF" stroke-width="2.291" stroke-miterlimit="10"/><path d="M185.733 85.04a14.981 14.981 0 0 1-8.372 12.468 16.186 16.186 0 0 1 8.485 11.314s2.263-9.051 8.622-11.722a14.16 14.16 0 0 1-8.735-12.06ZM250.339 167.114a8.593 8.593 0 0 1-4.797 7.151 9.307 9.307 0 0 1 4.865 6.495s1.358-5.25 4.956-6.789a8.149 8.149 0 0 1-5.024-6.857ZM258.528 89.476a8.58 8.58 0 0 1-4.82 7.15 9.365 9.365 0 0 1 4.888 6.495s1.357-5.25 4.955-6.789a8.104 8.104 0 0 1-5.023-6.856Z" fill="#fff"/><path d="M270.361 119.391a35.481 35.481 0 0 0-35.075-1.765l-72.864 35.188 14.482 29.983 74.019-35.731c7.4-3.575 15.976-12.288 19.438-27.675Z" fill="#28FDFF" stroke="#000" stroke-width="2.362" stroke-miterlimit="10"/><path d="m254.525 114.276 9.458 19.574a33.934 33.934 0 0 0 6.427-14.46 29.177 29.177 0 0 0-15.885-5.114Z" fill="#fff" stroke="#000" stroke-width="1.299" stroke-miterlimit="10"/><path d="M240.653 145.301c6.237 0 11.292-5.056 11.292-11.292 0-6.237-5.055-11.292-11.292-11.292-6.236 0-11.291 5.055-11.291 11.292 0 6.236 5.055 11.292 11.291 11.292Z" fill="#FDE82B" stroke="#000" stroke-width="2.362" stroke-miterlimit="10"/><path d="M214.088 127.807s-18.103 3.033-34.373-4.91c-16.271-7.943-24.462-11.541-35.098-6.404l17.605 36.432s52.183-25.005 51.866-25.118Z" fill="#28FDFF" stroke="#000" stroke-width="2.362" stroke-miterlimit="10"/><path d="m144.578 116.611 17.639 36.538-9.577 4.624-15.594-32.3a4.685 4.685 0 0 1 2.182-6.254l5.339-2.578.011-.03Z" fill="#fff" stroke="#000" stroke-width="2.362" stroke-miterlimit="10"/><path d="M228.569 157.95s-13.577 12.378-17.537 29.961c-3.96 17.582-6.177 26.34-16.813 31.476l-17.583-36.432s52.047-25.344 51.933-25.005Z" fill="#28FDFF" stroke="#000" stroke-width="2.362" stroke-miterlimit="10"/><path d="m182.45 219.615-15.544-32.198 9.578-4.624 17.64 36.538-5.217 2.519a4.812 4.812 0 0 1-3.693.224 4.821 4.821 0 0 1-2.764-2.459ZM142.454 137.02l34.433 71.323-8.885 4.29a5.435 5.435 0 0 1-5.975-.838 5.432 5.432 0 0 1-1.277-1.692l-29.71-61.542a5.423 5.423 0 0 1 .837-5.976 5.426 5.426 0 0 1 1.692-1.276l8.885-4.289Z" fill="#fff" stroke="#000" stroke-width="2.362" stroke-miterlimit="10"/><path d="m176.985 150.94 10.162 21.051a13.94 13.94 0 0 1-6.492 18.613l-17.016 8.215-22.283-46.157 17.015-8.215a13.932 13.932 0 0 1 10.652-.608 13.934 13.934 0 0 1 7.962 7.101Z" fill="#FDE82B" stroke="#000" stroke-width="2.362" stroke-miterlimit="10"/><path d="m182.339 161.48 48.312-21.792M251.627 128.713l7.468-3.394M148.281 167.001l29.485-12.717M156.585 183.09l29.486-12.695" stroke="#000" stroke-width="2.362" stroke-miterlimit="10"/><path d="M139.48 186.439a8.581 8.581 0 0 1-4.888 7.151 9.371 9.371 0 0 1 4.888 6.494s1.358-5.25 4.933-6.788a8.098 8.098 0 0 1-4.933-6.857Z" fill="#fff"/><path d="M83.795 129.922c5.219 0 9.45-4.231 9.45-9.449a9.449 9.449 0 0 0-9.45-9.449 9.45 9.45 0 0 0 0 18.898ZM310.567 262.205a4.723 4.723 0 0 0 4.724-4.725 4.723 4.723 0 0 0-4.724-4.724 4.723 4.723 0 0 0-4.724 4.724 4.723 4.723 0 0 0 4.724 4.725Z" fill="#28FDFF"/></svg>
+    <n-button type="info" size="medium" class="button-new" :on-click="clickNew">加一个地方吧</n-button>
     <div class="space-empty"></div>
     <div class="space-table">
       <n-data-table
           size="large"
-          :columns="columns"
+          :columns="columns()"
           :data="data"
           :pagination="pagination"
       />
     </div>
     <div class="space-empty"></div>
-  </n-space>
+
+<!--  <n-modal-->
+<!--      v-model:show="pageData.dialogVisible"-->
+<!--      type="info"-->
+<!--      preset="dialog"-->
+<!--      title="确认删除"-->
+<!--      content="你确认?"-->
+<!--      positive-text="确认"-->
+<!--      negative-text="算了"-->
+<!--      @positive-click="confirmDelete"-->
+<!--  />-->
+  <n-modal
+      v-model:show="pageData.cardVisible"
+      class="custom-card"
+      preset="card"
+      :style="{
+        width: '600px'
+      }"
+      title=加入一条！
+      size="huge"
+      :bordered="false"
+      :segmented="{
+        content: 'soft',
+        footer: 'soft'
+      }"
+  >
+      <n-form-item path="tags" label="标签" >
+        <n-input placeholder="写个标签: 还没去？老子已经去了？" v-model:value="newPlaceData.tags[0]" @keydown.enter.prevent />
+      </n-form-item>
+      <n-form-item path="address" label="地点">
+        <n-input v-model:value="newPlaceData.address" @keydown.enter.prevent placeholder="要去哪？"
+        />
+      </n-form-item>
+    <template #footer>
+      <n-space style="display: flex;justify-content: end">
+        <n-button type="info" :on-click="submit">
+          提交
+        </n-button>
+        <n-button type="default">
+          取消
+        </n-button>
+      </n-space>
+    </template>
+  </n-modal>
+
+<!--  </n-space>-->
+<!--  <kinesis-container>-->
+<!--    Here, you can put-->
+<!--    <kinesis-element :strength="10"> whatever </kinesis-element>-->
+<!--    <kinesis-element :strength="20"> content! </kinesis-element>-->
+<!--  </kinesis-container>-->
+  <div>
+
+<!--    <v-typical-->
+<!--        class="blink"-->
+<!--        :steps="['Hello', 1000, 'Hello World !', 600, 'Hello World ! 👋', 1000]"-->
+<!--        :loop="Infinity"-->
+<!--        :wrapper="'h2'"-->
+<!--    ></v-typical>-->
+  </div>
 </template>
 
 <style scoped lang="scss">
@@ -124,6 +206,10 @@ export default defineComponent({
 .space {
   display: flex;
   justify-content: center;
+}
+.button-new {
+  margin-left: 10px;
+  margin-bottom: 10px;
 }
 .content {
   width: 1000px;
@@ -169,6 +255,7 @@ export default defineComponent({
     justify-content: space-between;
     .logo{
       display: flex;
+      flex-direction: row;
       justify-content: center;
       align-items: center;
     }
