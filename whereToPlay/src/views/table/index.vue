@@ -3,6 +3,7 @@ import {h, onMounted, reactive} from "vue";
 import { NTag, NButton,NSpace,useMessage } from "naive-ui";
 
 const message = useMessage()
+document.title = '我们去哪耍~~'
 const columns = () => {
   return [
     {
@@ -62,14 +63,19 @@ const columns = () => {
   ];
 };
 const data = reactive([])
-
+const selectedRow = reactive({
+  id: null,
+  address: "",
+  tags: []
+})
 const newPlaceData = reactive({
   id: null,
   address: "",
   tags: []
 })
 const pagination = reactive({
-  pageSize: 10
+  pageSize: 4,
+
 })
 const pageData = reactive({
   dialogVisible: false,
@@ -83,12 +89,14 @@ const clickUpdate = ()=>{
 }
 
 const clickDelete = (row)=>{
-  // pageData.dialogVisible = true;
-  const newArr = data.filter(item => item.address!==row.address);
+  pageData.dialogVisible = true;
+  selectedRow.address = row.address;
+}
+const confirmDelete = ()=>{
+  const newArr = data.filter(item => item.address!==selectedRow.address);
   localStorage.setItem('myData', JSON.stringify(newArr));
   refresh()
 }
-
 const submit = ()=> {
   if (newPlaceData.address) {
     if (newPlaceData.tags.length === 0) {
@@ -98,7 +106,6 @@ const submit = ()=> {
     temp.push(newPlaceData)
     localStorage.setItem('myData', JSON.stringify(temp));
     refresh();
-    console.log()
     pageData.cardVisible = false;
   }
 }
@@ -143,6 +150,9 @@ onMounted(()=>{
     <div class="space-empty"></div>
     <div class="space-table">
       <n-data-table
+          flex-
+          min-height="100px"
+          max-height="340px"
           size="large"
           :columns="columns()"
           :data="data"
@@ -151,16 +161,16 @@ onMounted(()=>{
     </div>
     <div class="space-empty"></div>
 
-<!--  <n-modal-->
-<!--      v-model:show="pageData.dialogVisible"-->
-<!--      type="info"-->
-<!--      preset="dialog"-->
-<!--      title="确认删除"-->
-<!--      content="你确认?"-->
-<!--      positive-text="确认"-->
-<!--      negative-text="算了"-->
-<!--      @positive-click="confirmDelete"-->
-<!--  />-->
+  <n-modal
+      v-model:show="pageData.dialogVisible"
+      type="info"
+      preset="dialog"
+      title="确认删除"
+      content="删除会删除所有地点完全一样的记录"
+      positive-text="确认"
+      negative-text="算了"
+      @positive-click="confirmDelete"
+  />
   <n-modal
       v-model:show="pageData.cardVisible"
       class="custom-card"
