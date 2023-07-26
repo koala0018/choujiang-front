@@ -115,6 +115,7 @@ const refresh = ()=>{
       }
   ]
   }
+  localStorage.setItem('myData', JSON.stringify(myData));
   myData.forEach(item=>{
     data.push(item)
   })
@@ -183,11 +184,11 @@ onMounted(()=>{
         />
       </n-form-item>
     <template #footer>
-      <n-space style="display: flex;justify-content: end">
+      <n-space style="display: flex;">
         <n-button type="info" :on-click="submit">
           提交
         </n-button>
-        <n-button type="default">
+        <n-button type="default" :on-click="()=>{pageData.cardVisible=false}">
           取消
         </n-button>
       </n-space>
