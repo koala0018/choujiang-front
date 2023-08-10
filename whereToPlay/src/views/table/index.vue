@@ -2,6 +2,7 @@
 import {h, onMounted, reactive} from "vue";
 import { NTag, NButton,NSpace,useMessage } from "naive-ui";
 import {loadBigCirclesPreset} from "tsparticles-preset-big-circles";
+import API from "@/axios";
 
 // 设置图像
 const particlesInit = async engine => {
@@ -142,8 +143,22 @@ const refresh = ()=>{
   })
 
 }
+const baseUrl = import.meta.env.VITE_BASE_URL;
+
+const testAxios = ()=>{
+  debugger
+
+  API({
+    url: baseUrl + '/test/fuck',
+    method:'get'
+  }).then((res)=>{
+    alert(JSON.stringify(res))
+  });
+
+}
 onMounted(()=>{
   refresh();
+  testAxios()
 })
 </script>
 
