@@ -2,7 +2,7 @@
 import {h, onMounted, reactive} from "vue";
 import { NTag, NButton,NSpace,useMessage } from "naive-ui";
 import {loadBigCirclesPreset} from "tsparticles-preset-big-circles";
-import API from "@/axios";
+import {create, deleteAddress, getAddressList, getTestBackend} from "@/api/home";
 
 // 设置图像
 const particlesInit = async engine => {
@@ -17,40 +17,35 @@ const particlesOptions = {
 };
 
 // 业务功能
+const tableData = reactive([])
+
 const message = useMessage()
 document.title = '我们去哪耍~~'
 const columns = () => {
   return [
     {
-      key: "id",
-      width: 20
-    },
-    {
       title: "地点",
-      key: "address",
-      width: 150
+      key: "addressName",
+      width: 130
     },
     {
       title: "标签",
-      key: "tags",
-      width: 40,
+      key: "tag",
+      width: 60,
       render(row) {
-        const tags = row.tags.map((tagKey) => {
-          return h(
-              NTag,
-              {
-                style: {
-                  marginRight: "6px"
-                },
-                type: "success",
-                bordered: false
+        return h(
+            NTag,
+            {
+              style: {
+                marginRight: "6px"
               },
-              {
-                default: () => tagKey
-              }
-          );
-        });
-        return tags;
+              type: "success",
+              bordered: false
+            },
+            {
+              default: () => row.tag
+            }
+        );
       }
     },
     {
@@ -78,15 +73,18 @@ const columns = () => {
   ];
 };
 const data = reactive([])
+
 const selectedRow = reactive({
   id: null,
-  address: "",
-  tags: []
+  addressName: "",
+  tag: '',
+  createUser: ''
 })
+// 新增的数据
 const newPlaceData = reactive({
-  id: null,
-  address: "",
-  tags: []
+  addressName: "",
+  tag: '',
+  createUser: ''
 })
 const pagination = reactive({
   pageSize: 4,
@@ -105,25 +103,41 @@ const clickUpdate = ()=>{
 
 const clickDelete = (row)=>{
   pageData.dialogVisible = true;
-  selectedRow.address = row.address;
+  selectedRow.id = row.id;
 }
 const confirmDelete = ()=>{
-  const newArr = data.filter(item => item.address!==selectedRow.address);
-  localStorage.setItem('myData', JSON.stringify(newArr));
-  refresh()
+  deleteAddress(selectedRow.id).then(()=>{
+    getData();
+  })
 }
+
+
+
 const submit = ()=> {
-  if (newPlaceData.address) {
-    if (newPlaceData.tags.length === 0) {
-      newPlaceData.tags.push("未探索")
-    }
-    let temp = JSON.parse(localStorage.getItem('myData'));
-    temp.push(newPlaceData)
-    localStorage.setItem('myData', JSON.stringify(temp));
-    refresh();
-    pageData.cardVisible = false;
+  const param = {
+    addressName: newPlaceData.addressName,
+    tag: newPlaceData.tag,
   }
+  create(param).then((res)=>{
+    pageData.cardVisible = false;
+  })
+  getData();
 }
+
+
+// 旧的提交
+// const submit = ()=> {
+//   if (newPlaceData.address) {
+//     if (newPlaceData.tags.length === 0) {
+//       newPlaceData.tags.push("未探索")
+//     }
+//     let temp = JSON.parse(localStorage.getItem('myData'));
+//     temp.push(newPlaceData)
+//     localStorage.setItem('myData', JSON.stringify(temp));
+//     refresh();
+//     pageData.cardVisible = false;
+//   }
+// }
 
 const refresh = ()=>{
   data.splice(0);
@@ -145,20 +159,21 @@ const refresh = ()=>{
 }
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
+// 测试后端接口
 const testAxios = ()=>{
-  debugger
-
-  API({
-    url: baseUrl + '/test/fuck',
-    method:'get'
-  }).then((res)=>{
+  getTestBackend().then((res)=>{
     alert(JSON.stringify(res))
   });
-
 }
+const getData = ()=>{
+  getAddressList().then((res)=>{
+    tableData.value = res.data
+  })
+}
+
 onMounted(()=>{
+  getData()
   refresh();
-  testAxios()
 })
 </script>
 
@@ -185,7 +200,7 @@ onMounted(()=>{
             max-height="300px"
             size="large"
             :columns="columns()"
-            :data="data"
+            :data="tableData.value"
             :pagination="pagination"
         />
       </div>
@@ -219,10 +234,10 @@ onMounted(()=>{
       }"
       >
         <n-form-item path="tags" label="标签" >
-          <n-input placeholder="写个标签: 还没去？老子已经去了？" v-model:value="newPlaceData.tags[0]" @keydown.enter.prevent />
+          <n-input placeholder="写个标签: 还没去？老子已经去了？" v-model:value="newPlaceData.tag" @keydown.enter.prevent />
         </n-form-item>
         <n-form-item path="address" label="地点">
-          <n-input v-model:value="newPlaceData.address" @keydown.enter.prevent placeholder="要去哪？"
+          <n-input v-model:value="newPlaceData.addressName" @keydown.enter.prevent placeholder="要去哪？"
           />
         </n-form-item>
         <template #footer>
